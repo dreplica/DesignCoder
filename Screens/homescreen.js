@@ -1,19 +1,36 @@
 import React from 'react';
 import styled from 'styled-components'
-import {Text,View, ScrollView, SafeAreaView} from 'react-native'
+import {Text,View, ScrollView, SafeAreaView, TouchableOpacity} from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 
 import Card from '../components/card';
 import Logo from '../components/Logo';
 import Course from '../components/course'
 import Menu from '../components/Menu'
-const Home = () => {
+import { connect } from 'react-redux';
+
+const mapStateToProps = ({store})=>({
+  action:store?.action
+})
+
+const mapDispatchToProps = (dispatch) =>({updates:()=>dispatch({
+  type:'openmenu'
+})})
+
+const Home = ({action,updates}) => {
+  const toggleMenu = ()=>{
+    if(action === 'closemenu'){
+      updates()
+    }
+  }
   return (
     <Container>
         <Menu /> 
       <SafeAreaView>
       <ScrollView style={{'height':'100%'}}>
+        <TouchableOpacity onPress={toggleMenu}>
           <Avatar source={require('../assets/avatar.jpg')} />
+        </TouchableOpacity>
           <TitleBar>
             <Title>Welcome back</Title>
             <Name>David</Name>
@@ -65,7 +82,7 @@ const Home = () => {
   );
 }
 
-export default Home
+export default connect(mapStateToProps,mapDispatchToProps)(Home)
 
 const Container = styled.View`
   flex:1;

@@ -3,21 +3,28 @@ import styled from 'styled-components/native';
 import { Animated ,TouchableOpacity, Dimensions} from 'react-native';
 import {Ionicons} from "@expo/vector-icons"
 import MenuItem from './MenuItems';
+import { connect } from 'react-redux';
 
 const screenHeight = Dimensions.get("window").height;
-const Menu = ()=> {
-    const animate = new Animated.Value(screenHeight)
-    const [top, setTop] = useState(animate)
+
+const mapStateToProps = (store)=>({
+    action:store?.action
+})
+const mapDispatchToProps = (dispatch)=>({updateAll:()=>dispatch({ type: "toggleMenu" })})
+const Menu = ({action,updateAll})=> {
+    const animate = new Animated.Value(0)
+    const [top, settop] = useState(animate)
     useEffect(() => {
-      Animated.spring(top,{
-          toValue:0
-      }).start()
-    }, [])
-    const toggle = ()=>{
+        toggle()
+    }, [action])
+
+const toggle = ()=>{
         Animated.spring(top,{
-            toValue:screenHeight
+            toValue: (action === 'openmenu' ? screenHeight : top)
         }).start()
+        updateAll();
     }
+
   return (
     <Animate style={{top:top}}>
          <Cover >
@@ -52,7 +59,7 @@ const Menu = ()=> {
   );
 }
 
-export default Menu;
+export default connect(mapStateToProps,mapDispatchToProps)(Menu);
 
 const Image = styled.Image`
     position:absolute;
