@@ -26,6 +26,7 @@ const Home = ({action,updates}) => {
   const [opacity, setopacity] = useState(opacityVal)
   useEffect(() => {
     toggle()
+    StatusBar.setBarStyle("light-content", true)
   }, [action])
   const toggle = ()=>{
       if(action === 'openmenu'){
