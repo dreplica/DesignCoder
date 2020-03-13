@@ -8,9 +8,11 @@ import Logo from '../components/Logo';
 import Course from '../components/course'
 import Menu from '../components/Menu'
 import { connect } from 'react-redux';
+import Avatar from '../components/Avatar';
 
 const mapStateToProps = (store)=>({
-  action:store?.action
+  action:store?.action,
+  name:store?.name
 })
 
 const mapDispatchToProps = (dispatch) =>({updates:(args)=>dispatch({
@@ -21,7 +23,7 @@ const mapDispatchToProps = (dispatch) =>({updates:(args)=>dispatch({
 
 const opacityVal = new Animated.Value(1)
 const scaling = new Animated.Value(1)
-const Home = ({action,updates}) => {
+const Home = ({action,updates,name}) => {
   const [scale, setscale] = useState(scaling)
   const [opacity, setopacity] = useState(opacityVal)
   useEffect(() => {
@@ -67,11 +69,11 @@ const Home = ({action,updates}) => {
           height={50}
           style={{position:'absolute'}}
           >
-            <Avatar source={require('../assets/avatar.jpg')} />
+            <Avatar />
           </TouchableOpacity>
             <TitleBar>
               <Title>Welcome back</Title>
-              <Name>David</Name>
+              <Name>{name}</Name>
               <Ionicons name='md-notifications' 
               size={32} color='#4775f2'
               style={{position:'absolute',right:10, top:6}}
@@ -136,13 +138,7 @@ const Container = styled.View`
   z-index:-1;
 `
 const Animation = Animated.createAnimatedComponent(Container)
-const Avatar = styled.Image`
-  width:50px;
-  height:50px;
-  margin-top:50px;
-  left:10px;
-  border-radius:50px;
-`
+
 const Title = styled.Text`
   font-weight:300;
   font-size:22px;

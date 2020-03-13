@@ -10,16 +10,20 @@ const initialState = {
 const Reducer =(state = initialState,action) =>{
   switch(action.type){
     case "Open":
-      console.log("opening")
       return {
         ...state,
         action:'openmenu'
       }
     case "Close":
-      console.log('closing')
       return {
         ...state,
         action:"closemenu"
+      }
+    case "info_details":
+      console.log(payload?.name)
+      return {
+        ...state,
+        name:payload?.name
       }
     default:
       return state;
