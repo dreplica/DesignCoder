@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components'
-import {Text,View, ScrollView, SafeAreaView, TouchableOpacity} from 'react-native'
+import {ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar} from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 
 import Card from '../components/card';
@@ -9,92 +9,137 @@ import Course from '../components/course'
 import Menu from '../components/Menu'
 import { connect } from 'react-redux';
 
-const mapStateToProps = ({store})=>({
+const mapStateToProps = (store)=>({
   action:store?.action
 })
 
-const mapDispatchToProps = (dispatch) =>({updates:()=>dispatch({
-  type:'openmenu'
-})})
+const mapDispatchToProps = (dispatch) =>({updates:(args)=>dispatch({
+  type:args
+  })
+})
 
+
+const opacityVal = new Animated.Value(1)
+const scaling = new Animated.Value(1)
 const Home = ({action,updates}) => {
-  const toggleMenu = ()=>{
-    if(action === 'closemenu'){
-      updates()
-    }
+  const [scale, setscale] = useState(scaling)
+  const [opacity, setopacity] = useState(opacityVal)
+  useEffect(() => {
+    toggle()
+  }, [action])
+  const toggle = ()=>{
+      if(action === 'openmenu'){
+        console.log("reduce scale")
+        Animated.timing(scale,{
+          toValue:0.9,
+          duration:300,
+          easing:Easing.in()
+        }).start()
+        Animated.spring(opacity,{
+          toValue:0.5
+        }).start()
+        StatusBar.setBarStyle("light-content",true)
+      }
+      if(action === 'closemenu'){
+        console.log("increase scale")
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.in()
+        }).start()
+        Animated.spring(opacity,{
+          toValue:1
+        }).start()
+        StatusBar.setBarStyle("dark-content", true)
+
+      }
   }
   return (
-    <Container>
-        <Menu /> 
-      <SafeAreaView>
-      <ScrollView style={{'height':'100%'}}>
-        <TouchableOpacity onPress={toggleMenu}>
-          <Avatar source={require('../assets/avatar.jpg')} />
-        </TouchableOpacity>
-          <TitleBar>
-            <Title>Welcome back</Title>
-            <Name>David</Name>
-            <Ionicons name='md-notifications' 
-            size={32} color='#4775f2'
-            style={{position:'absolute',right:10, top:6}}
-            />
-          </TitleBar>
-          <ScrollView horizontal={true} 
-            showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 20, paddingBottom: 10,paddingTop:10,flexDirection:'row'}}>
-              {
-              Logos.map((item, ind) => <Logo key={ind} title={item.text} image={item.image} />)
-              }
-          </ScrollView>
-          <Subtitle>Continue Learning</Subtitle>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-         {
-           Cards.map((item,ind)=><Card 
-           key={ind}
-           image={item.image}
-           logo = {item.logo}
-           title = {item.title}
-           subtitle = {item.subtitle}
-           caption = {item.caption}
-           />)
-         }
-          
-        </ScrollView>
-        <Subtitle>Popular Courses</Subtitle>
-        <ScrollView
-        horizontal={true} 
-        showsHorizontalScrollIndicator={false}
-        >
+    <RootView>
+      <Menu /> 
+      <Animation style={{transform:[{scale:scale}],opacity:opacity}}>
+        <SafeAreaView>
+        <ScrollView style={{'height':'100%'}}>
+          <TouchableOpacity 
+          onPress={() => updates('Open')}
+          width={50}
+          height={50}
+          style={{position:'absolute'}}
+          >
+            <Avatar source={require('../assets/avatar.jpg')} />
+          </TouchableOpacity>
+            <TitleBar>
+              <Title>Welcome back</Title>
+              <Name>David</Name>
+              <Ionicons name='md-notifications' 
+              size={32} color='#4775f2'
+              style={{position:'absolute',right:10, top:6}}
+              />
+            </TitleBar>
+            <ScrollView horizontal={true} 
+              showsHorizontalScrollIndicator={false}
+              style={{ marginTop: 20, paddingBottom: 10,paddingTop:10,flexDirection:'row'}}>
+                {
+                Logos.map((item, ind) => <Logo key={ind} title={item.text} image={item.image} />)
+                }
+            </ScrollView>
+            <Subtitle>Continue Learning</Subtitle>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {
-          courses.map((item,ind)=><Course
-            key={ind}  
-            pic={item.pic}
+            Cards.map((item,ind)=><Card 
+            key={ind}
             image={item.image}
-            logo={item.logo}
-            title='Prototype in InVision Studio'
-            highlight='10 Sections'
+            logo = {item.logo}
+            title = {item.title}
+            subtitle = {item.subtitle}
+            caption = {item.caption}
             />)
           }
+            
+          </ScrollView>
+          <Subtitle>Popular Courses</Subtitle>
+          <ScrollView
+          horizontal={true} 
+          showsHorizontalScrollIndicator={false}
+          >
+            {
+            courses.map((item,ind)=><Course
+              key={ind}  
+              pic={item.pic}
+              image={item.image}
+              logo={item.logo}
+              title='Prototype in InVision Studio'
+              highlight='10 Sections'
+              />)
+            }
+          </ScrollView>
         </ScrollView>
-      </ScrollView>
-      </SafeAreaView>
-    </Container>
+        </SafeAreaView>
+      </Animation>
+    </RootView>
   );
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Home)
 
+const RootView = styled.View`
+  background:black;
+  flex:1;
+`
+
 const Container = styled.View`
   flex:1;
+  background:white;
   /* margin:50px 0px; */
+  border-radius:20px;
   z-index:-1;
 `
+const Animation = Animated.createAnimatedComponent(Container)
 const Avatar = styled.Image`
   width:50px;
   height:50px;
   margin-top:50px;
   left:10px;
-  position:absolute;
   border-radius:50px;
 `
 const Title = styled.Text`

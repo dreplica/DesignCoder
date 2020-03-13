@@ -10,19 +10,25 @@ const screenHeight = Dimensions.get("window").height;
 const mapStateToProps = (store)=>({
     action:store?.action
 })
-const mapDispatchToProps = (dispatch)=>({updateAll:()=>dispatch({ type: "toggleMenu" })})
+const mapDispatchToProps = (dispatch)=>({updateAll:(arg)=>dispatch({ type: arg })})
 const Menu = ({action,updateAll})=> {
-    const animate = new Animated.Value(0)
+    const animate = new Animated.Value(screenHeight)
     const [top, settop] = useState(animate)
     useEffect(() => {
-        toggle()
+           toggle()
     }, [action])
 
 const toggle = ()=>{
-        Animated.spring(top,{
-            toValue: (action === 'openmenu' ? screenHeight : top)
-        }).start()
-        updateAll();
+       if(action === "openmenu"){
+           Animated.spring(top,{
+               toValue: 60
+            }).start()
+        } 
+    if (action === "closemenu"){
+               Animated.spring(top,{
+                   toValue: screenHeight + 100
+               }).start()
+       }
     }
 
   return (
@@ -33,7 +39,7 @@ const toggle = ()=>{
             <Subtitle>adejo.david@decagon.dev</Subtitle>
          </Cover>
         <TouchableOpacity 
-            onPress={toggle} 
+            onPress={()=>updateAll('Close')} 
             style={{
                 position:'absolute',
                 top:120,
@@ -105,6 +111,8 @@ const Container = styled.View`
     width:100%;
     top:0px;
     z-index:2 ;
+    border-radius:20px;
+    overflow:hidden;
 `
 const Animate = Animated.createAnimatedComponent(Container)
 

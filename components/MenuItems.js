@@ -36,7 +36,7 @@ const Iconview = styled.View`
 
 const Container = styled.View`
     width:100%;
-    margin:40px 30px 0px  30px;
+    margin:50px 30px 0px  50px;
     flex-direction:row;
     justify-content:flex-start;
     align-items:flex-start;

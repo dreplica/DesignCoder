@@ -4,15 +4,22 @@ import Home from './Screens/homescreen';
 import { Provider } from 'react-redux';
 
 const initialState = {
-  action:"openmenu"
+  action:""
 }
 
 const Reducer =(state = initialState,action) =>{
   switch(action.type){
-    case "toggleMenu":
+    case "Open":
+      console.log("opening")
       return {
         ...state,
-        action:state.action === 'openmenu'?'closeMenu':'openmenu'
+        action:'openmenu'
+      }
+    case "Close":
+      console.log('closing')
+      return {
+        ...state,
+        action:"closemenu"
       }
     default:
       return state;
