@@ -1,6 +1,6 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 const MenuItem =(props) =>{
     return (

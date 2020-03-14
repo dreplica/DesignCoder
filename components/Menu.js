@@ -12,7 +12,7 @@ const mapStateToProps = (store)=>({
 })
 const mapDispatchToProps = (dispatch)=>({updateAll:(arg)=>dispatch({ type: arg })})
 const Menu = ({action,updateAll})=> {
-    const animate = new Animated.Value(screenHeight)
+    const animate = new Animated.Value(screenHeight +100)
     const [top, settop] = useState(animate)
     useEffect(() => {
            toggle()
@@ -107,7 +107,7 @@ const Cover = styled.View`
 
 const Container = styled.View`
     position:absolute;
-    height:100%;
+    height:${screenHeight};
     width:100%;
     top:0px;
     z-index:2 ;

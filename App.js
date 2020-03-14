@@ -1,7 +1,10 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import {createStore} from 'redux'
-import Home from './Screens/homescreen';
 import { Provider } from 'react-redux';
+
+import Home from './Screens/homescreen';
+import AppContainer from "./navigator/appNavigator";
 
 const initialState = {
   action:""
@@ -20,10 +23,10 @@ const Reducer =(state = initialState,action) =>{
         action:"closemenu"
       }
     case "info_details":
-      console.log(payload?.name)
+      console.log(action.payload)
       return {
         ...state,
-        name:payload?.name
+        name:action?.payload
       }
     default:
       return state;
@@ -35,7 +38,7 @@ const App = () => {
   return (
     <>
     <Provider store={store}> 
-      <Home/>
+     <AppContainer />
     </Provider>
     </>
   )

@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch) =>({updates:(args)=>dispatch({
 
 const opacityVal = new Animated.Value(1)
 const scaling = new Animated.Value(1)
-const Home = ({action,updates,name}) => {
+const Home = ({action,updates,name,navigation}) => {
   const [scale, setscale] = useState(scaling)
   const [opacity, setopacity] = useState(opacityVal)
   useEffect(() => {
@@ -89,14 +89,18 @@ const Home = ({action,updates,name}) => {
             <Subtitle>Continue Learning</Subtitle>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {
-            Cards.map((item,ind)=><Card 
+            Cards.map((item,ind)=><TouchableOpacity 
             key={ind}
-            image={item.image}
-            logo = {item.logo}
-            title = {item.title}
-            subtitle = {item.subtitle}
-            caption = {item.caption}
-            />)
+            onPress={()=>navigation.push("Section")}>
+              <Card 
+              image={item.image}
+              logo = {item.logo}
+              title = {item.title}
+              subtitle = {item.subtitle}
+              caption = {item.caption}
+              />
+            </TouchableOpacity>
+              )
           }
             
           </ScrollView>
@@ -134,7 +138,8 @@ const Container = styled.View`
   flex:1;
   background:white;
   /* margin:50px 0px; */
-  border-radius:20px;
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
   z-index:-1;
 `
 const Animation = Animated.createAnimatedComponent(Container)
