@@ -26,9 +26,19 @@ const scaling = new Animated.Value(1)
 const Home = ({action,updates,name,navigation}) => {
   const [scale, setscale] = useState(scaling)
   const [opacity, setopacity] = useState(opacityVal)
+  const [Cards, setCards] = useState([{
+    title: "Static Data and Loop",
+    image: "https://bit.ly/33hpAqw",
+    logo: require("../assets/logo-react.png"),
+    subtitle: "React Native",
+    caption: "4 of 12 Section"
+  }])
   useEffect(() => {
     toggle()
     StatusBar.setBarStyle("light-content", true)
+    fetch('https://next.json-generator.com/api/json/get/VkIGrEVBu')
+    .then((res)=>res.json())
+    .then((data)=>setCards(data))
   }, [action])
   const toggle = ()=>{
       if(action === 'openmenu'){
@@ -89,9 +99,9 @@ const Home = ({action,updates,name,navigation}) => {
             <Subtitle>Continue Learning</Subtitle>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {
-            Cards.map((item,ind)=><TouchableOpacity 
+            Cards.length > 0 && Cards.map((item,ind)=><TouchableOpacity 
             key={ind}
-            onPress={()=>navigation.push("Section")}>
+            onPress={()=>navigation.push("Section",{section:item})}>
               <Card 
               image={item.image}
               logo = {item.logo}
@@ -195,37 +205,6 @@ const Logos = [
   },
 ]
 
-
-const Cards = [
-  {
-    title:"React Native for Designers",
-    image:require("../assets/background11.jpg"),
-    logo:require("../assets/logo-react.png"),
-    subtitle:"React Native",
-    caption:"1 of 12 Section"
-  },  
-  {
-    title: "Styled Components",
-    image: require("../assets/background12.jpg"),
-    logo: require("../assets/logo-react.png"),
-    subtitle: "React Native",
-    caption: "2 of 12 Section"
-  },
-  {
-    title: "Props and Icons",
-    image: require("../assets/background13.jpg"),
-    logo: require("../assets/logo-react.png"),
-    subtitle: "React Native",
-    caption: "3 of 12 Section" 
-  },
-  {
-    title: "Static Data and Loop",
-    image: require("../assets/background14.jpg"),
-    logo: require("../assets/logo-react.png"),
-    subtitle: "React Native",
-    caption: "4 of 12 Section"
-  }
-]
 
 const courses = [
   {

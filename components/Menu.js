@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Animated ,TouchableOpacity, Dimensions} from 'react-native';
+import { Animated ,TouchableOpacity, Dimensions, ScrollView} from 'react-native';
 import {Ionicons} from "@expo/vector-icons"
 import MenuItem from './MenuItems';
 import { connect } from 'react-redux';
@@ -52,15 +52,17 @@ const toggle = ()=>{
                 size={40} color={'#546bfb'}/>
             </CloseView>
         </TouchableOpacity>
-        <Content>
-         {
-         Menu_item.map((item,ind)=><MenuItem 
-         key={ind}
-         title={item.title} 
-         icon={item.icon} 
-         text={item.text} />)
-         }
-         </Content>
+        <ScrollView>
+            <Content>
+            {
+            Menu_item.map((item,ind)=><MenuItem 
+            key={ind}
+            title={item.title} 
+            icon={item.icon} 
+            text={item.text} />)
+            }
+            </Content>
+        </ScrollView>
      </Animate>
   );
 }

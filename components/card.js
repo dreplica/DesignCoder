@@ -8,11 +8,11 @@ export default function Card(props) {
     return (
        <Container>
            <Cover>
-               <Images source={props.image} />
+               <Images source={{uri:props.image}} />
                <Title>{props.title}</Title>
            </Cover>
            <Content>
-               <Logo source={props.logo} />
+               <Logo source={{uri:'https://bit.ly/39QhSpZ'}} />
                <Wrapper>
                    <Caption>{props.caption}</Caption>
                    <Subtitle>{props.subtitle}</Subtitle>
