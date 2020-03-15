@@ -27,9 +27,9 @@ import styled from 'styled-components/native';
 
  export const Container = styled.View`
     border-radius:10px;
-    height:400px;
-    width:400px;
-    margin:20px 20px 0px 10px;
+    height:380px;
+    width:380px;
+    margin:20px 10px 20px 5px;
     
  `
 
@@ -90,6 +90,7 @@ import styled from 'styled-components/native';
  `
 
  export const SubHeader = styled.Text`
+   width:250px;
     font-size:20px;
     font-weight:bold;
 

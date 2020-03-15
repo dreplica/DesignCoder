@@ -1,6 +1,5 @@
 import React from 'react';
 import  styled from 'styled-components/native';
-import { AppRegistry } from 'react-native';
 
 
 
@@ -13,9 +12,9 @@ export default function Card(props) {
            </Cover>
            <Content>
                <Logo source={{uri:'https://bit.ly/39QhSpZ'}} />
-               <Wrapper>
+               <Wrapper>  
                    <Caption>{props.caption}</Caption>
-                   <Subtitle>{props.subtitle}</Subtitle>
+                   <Subtitle>{props.subtitle.toUpperCase()}</Subtitle>
                </Wrapper>
            </Content>
        </Container>

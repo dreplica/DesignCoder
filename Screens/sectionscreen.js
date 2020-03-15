@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import styled from 'styled-components';
-import { TouchableOpacity,StatusBar } from 'react-native';
+import { TouchableOpacity,StatusBar, Linking } from 'react-native';
 import {Ionicons} from '@expo/vector-icons'
+import WebView from 'react-native-webview';
 
 const Section = ({navigation}) =>{
   const [Section, setSection] = useState(navigation.getParam("section"));
+  const ref = useRef()
   useEffect(() => {
     StatusBar.setHidden(true)
     StatusBar.setBarStyle('light-content',true)
     return ()=>StatusBar.setBarStyle('dark-content',true)
   }, [])
-    console.log("this is section",Section)
+
+  const handleview = (event)=>{
+    ref.current.stopLoading();
+            if(event.url !== 'about:blank'){
+              Linking.openURL(event.url)
+            }
+          }
   return (
     <Container> 
       <StatusBar hidden />
@@ -36,6 +44,13 @@ const Section = ({navigation}) =>{
             />
           </Closeview>
         </TouchableOpacity>
+        <Content>
+          <WebView 
+          source={{ uri:'https://twitter.com' }} 
+          ref={ref}
+          // onShouldStartLoadWithRequest={false}
+          onNavigationStateChange={handleview}/>
+        </Content>
     </Container>
   );
 }
@@ -102,4 +117,27 @@ const Subtitle = styled.Text`
   font-size:23px;
   font-weight:100;
   width:300px;
+`
+
+const Content = styled.View`
+    height:100%;
+    padding:20px;
+`
+
+const html = `
+  <h3>Hello everyone, <a href='google.com'>it is</a> i</h3>
+  <img src='' alt='image'/>
+`
+const styling = `
+<style>
+  *{
+    margin:0;
+    padding:0;
+    font-family:roboto;
+  }
+
+  h3{
+    font-size:30px;
+  }
+  </style>
 `

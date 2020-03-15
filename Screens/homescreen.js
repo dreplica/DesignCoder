@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components'
-import {ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar} from 'react-native'
+import {
+  ScrollView, 
+  SafeAreaView, 
+  TouchableOpacity, 
+  Animated, 
+  Easing, 
+  StatusBar,
+  Platform
+} from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 
 import Card from '../components/card';
@@ -34,8 +42,11 @@ const Home = ({action,updates,name,navigation}) => {
     caption: "4 of 12 Section"
   }])
   useEffect(() => {
+    if(Platform.OS === 'android'){
+      StatusBar.setHidden(false)
+      StatusBar.setBarStyle('light-content',true)
+    }
     toggle()
-    StatusBar.setBarStyle("light-content", true)
     fetch('https://next.json-generator.com/api/json/get/VkIGrEVBu')
     .then((res)=>res.json())
     .then((data)=>setCards(data))
@@ -51,7 +62,7 @@ const Home = ({action,updates,name,navigation}) => {
         Animated.spring(opacity,{
           toValue:0.5
         }).start()
-        StatusBar.setBarStyle("light-content",true)
+        StatusBar.setBarStyle("dark-content",true)
       }
       if(action === 'closemenu'){
         console.log("increase scale")
@@ -63,7 +74,7 @@ const Home = ({action,updates,name,navigation}) => {
         Animated.spring(opacity,{
           toValue:1
         }).start()
-        StatusBar.setBarStyle("dark-content", true)
+        // StatusBar.setBarStyle("dark-content", true)
 
       }
   }
@@ -115,20 +126,24 @@ const Home = ({action,updates,name,navigation}) => {
             
           </ScrollView>
           <Subtitle>Popular Courses</Subtitle>
+          
+          {/* //(https://next.json-generator.com/api/json/get/4yHewBVSd courses api */}
           <ScrollView
-          horizontal={true} 
+          horizontal={false} 
           showsHorizontalScrollIndicator={false}
           >
-            {
-            courses.map((item,ind)=><Course
-              key={ind}  
-              pic={item.pic}
-              image={item.image}
-              logo={item.logo}
-              title='Prototype in InVision Studio'
-              highlight='10 Sections'
-              />)
-            }
+            <Courseoutline>
+              {
+              courses.map((item,ind)=><Course
+                key={ind}  
+                pic={item.pic}
+                image={item.image}
+                logo={item.logo}
+                title='Prototype in InVision Studio'
+                highlight='10 Sections'
+                />)
+              }
+            </Courseoutline>
           </ScrollView>
         </ScrollView>
         </SafeAreaView>
@@ -176,6 +191,15 @@ const Subtitle = styled.Text`
   text-transform:uppercase;
   font-size:20px;
   margin:20px 10px;
+`
+
+const Courseoutline = styled.View`
+   /* margin:auto; */
+   /* text-align:center; */
+   justify-content:center;
+   flex-direction:row;
+   align-content:center;
+   flex-wrap:wrap;
 `
 
 const Logos = [

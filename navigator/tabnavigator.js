@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
  import Projects from "../Screens/Projectscreen";
 
 const activeColor = '#4775f2'
-const inactiveColor = '#b8b3ece'
+const inactiveColor = '#111'
 
  const HomeStack = createStackNavigator({
      Home:{

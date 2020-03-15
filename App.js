@@ -3,7 +3,6 @@ import React from 'react';
 import {createStore} from 'redux'
 import { Provider } from 'react-redux';
 
-import Home from './Screens/homescreen';
 import AppContainer from "./navigator/appNavigator";
 
 const initialState = {
