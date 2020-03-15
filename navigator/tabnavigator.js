@@ -71,9 +71,9 @@ const inactiveColor = '#111'
  }
 
  const TabNavigator = createBottomTabNavigator({
+     Projects:Projectstack,
      Home:HomeStack,
      Course:Coursestack,
-     Projects:Projectstack
  })
 
  export default TabNavigator;
