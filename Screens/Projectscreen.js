@@ -16,18 +16,21 @@ const Projects = ({navigation}) =>{
         ])
       }))
       console.log(pan)
+      // return ()=>set_panResponder()
     }, [])
   return (
     <Container>
-      <Animated.View 
+      {_panResponder ? <Animated.View 
       style={{transform:[
         {translateX:pan.x},
         {translateY:pan.y}
       ]}}
-      {..._panResponder.panHandlers}
+        {..._panResponder.panHandlers}
       >
         <Project />
       </Animated.View>
+    : <Project/>
+}
     </Container>
   );
 }
