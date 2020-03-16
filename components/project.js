@@ -9,12 +9,14 @@ export default function Project(props) {
     width:new Animated.Value(315),
     height:new Animated.Value(400),
     titleTop:new Animated.Value(20),
+    opacity:new Animated.Value(0),
   })
 
   const Resize = ()=>{
     Animated.spring(dimension.width,{toValue:width}).start()
     Animated.spring(dimension.height,{toValue:height}).start()
     Animated.spring(dimension.titleTop,{toValue:40}).start()
+    Animated.spring(dimension.opacity,{toValue:1}).start()
     StatusBar.setHidden(true)
   }
   
@@ -22,7 +24,8 @@ export default function Project(props) {
     Animated.spring(dimension.width, { toValue: 315 }).start()
     Animated.spring(dimension.height, { toValue: 400 }).start()
     Animated.spring(dimension.titleTop, { toValue: 20 }).start()
-    StatusBar.setHidden(true)
+    Animated.spring(dimension.opacity, { toValue: 0 }).start()
+    StatusBar.setHidden(false)
 
   }
 
@@ -46,9 +49,9 @@ export default function Project(props) {
             right:25
           }}
           >
-            <Closing>
+            <Animatedopacity style={{opacity:dimension.opacity}}>
               <Ionicons name="md-close" color="546bfb" size={32}/>
-            </Closing>
+            </Animatedopacity>
           </TouchableOpacity>
         </Animationcontainer>
       </TouchableWithoutFeedback>
@@ -63,6 +66,7 @@ const Closing = styled.View`
     align-items:center;
     background-color:white;
 `
+const Animatedopacity = Animated.createAnimatedComponent(Closing)
 
 const Text = styled.Text`
   font-size:17px;
