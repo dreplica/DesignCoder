@@ -1,9 +1,13 @@
-import React,{useState} from 'react';
+import React,{useState, useRef, useEffect} from 'react';
 import styled from 'styled-components/native';
+import { connect } from "react-redux";
+import { LinearGradient} from 'expo-linear-gradient'
 import {Ionicons} from "@expo/vector-icons"
 import { TouchableOpacity, TouchableWithoutFeedback,Animated, Dimensions, StatusBar } from 'react-native'
-export default function Project(props) {
+export  function Project(props) {
+  const ref = useRef()
   const [width, setWidth] = useState(Dimensions.get('window').width)
+  const [textHeight, setTextHeight] = useState(new Animated.Value(80))
   const [height, setHeight] = useState(Dimensions.get('window').height)
   const [dimension, setDimension] = useState({
     width:new Animated.Value(315),
@@ -11,21 +15,31 @@ export default function Project(props) {
     titleTop:new Animated.Value(20),
     opacity:new Animated.Value(0),
   })
+  useEffect(() => {
+    
+  }, [Resize,close])
 
   const Resize = ()=>{
+    if(!props.canOpen) return;
+
+    Animated.timing(textHeight,{toValue:1000,duration:200}).start()
     Animated.spring(dimension.width,{toValue:width}).start()
     Animated.spring(dimension.height,{toValue:height}).start()
     Animated.spring(dimension.titleTop,{toValue:40}).start()
     Animated.spring(dimension.opacity,{toValue:1}).start()
     StatusBar.setHidden(true)
+    props.setOpen();
+    
   }
   
   const close = ()=>{
+    Animated.timing(textHeight,{toValue:80,duration:200}).start()
     Animated.spring(dimension.width, { toValue: 315 }).start()
     Animated.spring(dimension.height, { toValue: 400 }).start()
     Animated.spring(dimension.titleTop, { toValue: 20 }).start()
     Animated.spring(dimension.opacity, { toValue: 0 }).start()
     StatusBar.setHidden(false)
+    props.setClose();
 
   }
 
@@ -34,13 +48,23 @@ export default function Project(props) {
         <Animationcontainer
         width={dimension.width}
         height={dimension.height}
+        ref={ref}
         >
           <Cover>
             <Image source={props.image} />
             <AnimatedTitle style={{top:dimension.titleTop}}>{props.title}</AnimatedTitle>
             <Author>{props.author}</Author>
           </Cover>
-        <Text>{props.text}</Text>
+        <AnimatedText style={{height:textHeight}}>{props.text}</AnimatedText>
+        {/* <AnimatedLinearGradient
+          colors={[`rgba(255,255,255,0)`,`rgba(255,255,255,1)`]}
+          style={{
+            position:'absolute',
+            width:`100%`,
+            background:'red',
+            bottom: 0,
+            height:textHeight
+          }}/> */}
           <TouchableOpacity
           onPress={close}
           style={{
@@ -57,6 +81,16 @@ export default function Project(props) {
       </TouchableWithoutFeedback>
   );
 }
+const mapDispatchToProps =(dispatch)=> {
+  return {
+    setOpen: ()=>dispatch({type:'openProject'}),
+    setClose:()=>dispatch({type:'closeProject'})
+}
+}
+
+ export default connect(null,mapDispatchToProps)(Project)
+
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 const Closing = styled.View`
     width:30px;
@@ -70,12 +104,13 @@ const Animatedopacity = Animated.createAnimatedComponent(Closing)
 
 const Text = styled.Text`
   font-size:17px;
-  margin:20px;
+  margin:10px 20px;
   padding:5px;
+  align-self:center;
   line-height:24px;
   color:#3c4560;
 `
-
+const AnimatedText = Animated.createAnimatedComponent(Text)
 
 const Author = styled.Text`
   position:absolute;

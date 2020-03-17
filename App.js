@@ -27,6 +27,16 @@ const Reducer =(state = initialState,action) =>{
         ...state,
         name:action?.payload
       }
+    case "openProject":
+      return {
+        ...state,
+        action:"open"
+      }
+    case "closeProject":
+      return {
+        ...state,
+        action:"close"
+      }
     default:
       return state;
   }
