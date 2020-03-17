@@ -24,15 +24,15 @@ const mapStateToProps = (store)=>({
   name:store?.name
 })
 
-const mapDispatchToProps = (dispatch) =>({updates:(args)=>dispatch({
-  type:args
-  })
+const mapDispatchToProps = (dispatch) =>({
+  updates:(args)=>dispatch({type:args}),
+  open_login:()=>dispatch({type:"Open_login"})
 })
 
 
 const opacityVal = new Animated.Value(1)
 const scaling = new Animated.Value(1)
-const Home = ({action,updates,name,navigation}) => {
+const Home = ({action,updates,name,navigation,open_login}) => {
   const [scale, setscale] = useState(scaling)
   const [opacity, setopacity] = useState(opacityVal)
   const [Cards, setCards] = useState([{
@@ -86,7 +86,7 @@ const Home = ({action,updates,name,navigation}) => {
         <SafeAreaView>
         <ScrollView style={{'height':'100%'}}>
           <TouchableOpacity 
-          onPress={() => updates('Open')}
+          onPress={() =>open_login()}
           width={50}
           height={50}
           style={{position:'absolute'}}

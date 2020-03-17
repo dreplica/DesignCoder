@@ -1,18 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import styled from 'styled-components/native';
-import { TouchableWithoutFeedback, Animated,Keyboard } from 'react-native';
+import { TouchableWithoutFeedback, Animated,Keyboard, Alert, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
 import Success from './success';
 import Loading from './loading';
+import { connect } from 'react-redux';
 // import {BoxShadow} from 'react-native-shadow'
 
-export default function ModalLogin() {
+const screenHeight = Dimensions.get('window').height;
+export  function ModalLogin({action,close_login}) {
     const [success, setSuccess] = useState(false)
+    const [scale, setScale] = useState(new Animated.Value(0.8))
+    const [translateY, setTransform] = useState(new Animated.Value(0))
     const [loading, setLoading] = useState(false)
     const [email, sete] = useState(new Animated.Value(15))
+    const [top, setTop] = useState(new Animated.Value(screenHeight))
     const [password, setp] = useState(new Animated.Value(15))
     const [emailValue, setEmail] = useState("")
     const [passwordValue, setPassword] = useState("")
+    useEffect(() => {
+        console.log(action)
+      if(action === 'open_login'){
+          console.log("supposed to open here")
+          console.log("supposed to open here")
+          Animated.timing(top,{toValue:0,duration:300}).start()
+          Animated.timing(scale, { toValue: 1, duration: 400}).start()
+        }
+        if(action === 'close_login'){
+            console.log("supposed to close here")
+            setTimeout(()=>{
+                Animated.timing(top,{toValue:screenHeight,duration:300}).start()
+                Animated.timing(scale,{toValue:0.2,duration:100}).start() 
+            },200)
+      }
+    }, [action])
 
     const removeAnim = (id)=>{
         //my awesome animation
@@ -43,15 +64,29 @@ export default function ModalLogin() {
             setSuccess(true)
         },2000)
         setTimeout(()=>{
+            Alert.alert("congratulations", "You've logged in successfully")
             setSuccess(false)
+            close_login()
         },4000)
         // setEmail("")
         // setPassword("")
     }
 
-  return (
-    <Container>
-        <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
+    const hideDetails = ()=>{
+       Alert.alert("Exiting","Do you want to Exit",[
+           {text:"exit",onPress:()=>{close_login()}},
+           {text:"cancel",onPress:()=>false}
+        ])
+    }
+
+    const hideKeyboard =()=>{
+        Keyboard.dismiss();
+        // close_login()
+    }
+
+  return ( 
+    <AnimatedContainer style={{top:top}}>
+        <TouchableWithoutFeedback onPress={hideKeyboard}>
             <BlurView 
             intensity={100}
             tint='default'
@@ -62,7 +97,7 @@ export default function ModalLogin() {
             }}
             />
         </TouchableWithoutFeedback>
-        <Modal>
+        <AnimatedModal style={{transform:[{scale:scale}]}}>
             <Logo source={require(`../assets/logo-vue.png`)}/>
             <Text> Start Learning Access your privileges</Text>
             <TextInput 
@@ -86,29 +121,49 @@ export default function ModalLogin() {
                 <Button onPress={wipeDetails}>
                     <ButtonText>Log in</ButtonText>
                 </Button>
-        </Modal>
+                <Button onPress={hideDetails} style={{backgroundColor:'orange'}}>
+                    <ButtonText>Cancel Login</ButtonText>
+                </Button>
+        </AnimatedModal>
         <Success active={success}/>
         <Loading active={loading}/>
-    </Container>
+    </AnimatedContainer>
   );
 }
+
+const mapStateToProps = (store) =>({
+    action:store?.action
+})
+const mapDispatchToProps = (dispatch) =>{
+    return {
+        // open_login:()=>dispatch({type:'Open_login'}),
+        close_login: () => dispatch({ type:'Close_login'})
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(ModalLogin)
 
 const Container = styled.View`
     background:rgba(0,0,0,0.7);
     position:absolute;
     top:0;
+    z-index:5;
     left:0;
     width:100%;
     height:100%;
 `
+const AnimatedContainer = Animated.createAnimatedComponent(Container)
+
 const Modal = styled.View`
     width:350px;
-    height:400px;
+    height:450px;
     background:white;
     border-radius:20px;
     margin:auto;
     align-items:center;
 `
+const AnimatedModal = Animated.createAnimatedComponent(Modal)
+
 const Logo = styled.Image`
     width:60px;
     height:60px;

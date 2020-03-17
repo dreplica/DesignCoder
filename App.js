@@ -6,7 +6,8 @@ import { Provider } from 'react-redux';
 import AppContainer from "./navigator/appNavigator";
 
 const initialState = {
-  action:""
+  action:"",
+  auth:false
 }
 
 const Reducer =(state = initialState,action) =>{
@@ -36,6 +37,18 @@ const Reducer =(state = initialState,action) =>{
       return {
         ...state,
         action:"close"
+      }
+    case "Open_login":
+      console.log("it has opened")
+      return {
+        ...state,
+        action:"open_login"
+      }
+      case "Close_login":
+        console.log("it has closed")
+      return {
+        ...state,
+        action:"close_login"
       }
     default:
       return state;
