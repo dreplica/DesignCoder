@@ -17,6 +17,7 @@ import Course from '../components/course'
 import Menu from '../components/Menu'
 import { connect } from 'react-redux';
 import Avatar from '../components/Avatar';
+import ModalLogin from '../components/modallogin';
 
 const mapStateToProps = (store)=>({
   action:store?.action,
@@ -148,6 +149,7 @@ const Home = ({action,updates,name,navigation}) => {
         </ScrollView>
         </SafeAreaView>
       </Animation>
+        <ModalLogin />
     </RootView>
   );
 }
