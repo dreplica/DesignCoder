@@ -1,21 +1,43 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
+import { AsyncStorage, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 
 const MenuItem =(props) =>{
+
+    const logout = async ()=>{
+        if(props.title === 'Log out'){
+            await AsyncStorage.clear();
+            await AsyncStorage.removeItem('name');
+            props.close();
+        }
+    }
+
     return (
-        <Container>
-            <Iconview>
-                <Ionicons color='#546bfb' name={props?.icon} size={25} />
-            </Iconview>
-            <Content>
-                <Title>{props?.title}</Title>
-                <Text>{props?.text}</Text>
-            </Content>
-        </Container>
+        <TouchableOpacity onPress={logout}>
+            <Container>
+                <Iconview>
+                    <Ionicons color='#546bfb' name={props?.icon} size={25} />
+                </Iconview>
+                <Content>
+                    <Title>{props?.title}</Title>
+                    <Text>{props?.text}</Text>
+                </Content>
+            </Container>
+        </TouchableOpacity>
     );
 }
-export default MenuItem
+
+const mapDispatchToProps = (dispatch)=>{
+    return {
+        close: () => dispatch({ type: "Close"})
+    }
+}
+
+// const mapStateToProps
+
+export default connect(null,mapDispatchToProps)(MenuItem)
 
 const Text = styled.Text`
     font-size:18px;

@@ -1,14 +1,15 @@
 import React, { useState,useEffect } from 'react';
 import styled from 'styled-components/native';
-import { TouchableWithoutFeedback, Animated,Keyboard, Alert, Dimensions } from 'react-native';
+import { TouchableWithoutFeedback, Animated,Keyboard, Alert, Dimensions,AsyncStorage } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { connect } from 'react-redux';
+import firebase from "./firebase";
+
 import Success from './success';
 import Loading from './loading';
-import { connect } from 'react-redux';
-// import {BoxShadow} from 'react-native-shadow'
 
 const screenHeight = Dimensions.get('window').height;
-export  function ModalLogin({action,close_login}) {
+export  function ModalLogin({action,close_login,set_username}) {
     const [success, setSuccess] = useState(false)
     const [scale, setScale] = useState(new Animated.Value(0.8))
     const [translateY, setTransform] = useState(new Animated.Value(0))
@@ -19,18 +20,14 @@ export  function ModalLogin({action,close_login}) {
     const [emailValue, setEmail] = useState("")
     const [passwordValue, setPassword] = useState("")
     useEffect(() => {
-        console.log(action)
       if(action === 'open_login'){
-          console.log("supposed to open here")
-          console.log("supposed to open here")
-          Animated.timing(top,{toValue:0,duration:300}).start()
+          Animated.timing(top, { toValue: 0, duration: 300,}).start()
           Animated.timing(scale, { toValue: 1, duration: 400}).start()
         }
         if(action === 'close_login'){
-            console.log("supposed to close here")
             setTimeout(()=>{
-                Animated.timing(top,{toValue:screenHeight,duration:300}).start()
-                Animated.timing(scale,{toValue:0.2,duration:100}).start() 
+                Animated.timing(top, { toValue: screenHeight, duration: 300,}).start()
+                Animated.timing(scale, { toValue: 0.2, duration: 100}).start() 
             },200)
       }
     }, [action])
@@ -39,37 +36,32 @@ export  function ModalLogin({action,close_login}) {
         //my awesome animation
         console.log("animating")
         if(id === 'email'){
-            Animated.timing(email,{toValue:0,duration:500}).start(()=>{
-                Animated.timing(email,{toValue:15,delay:100,duration:500}).start()
+            Animated.timing(email, { toValue: 0, duration: 500}).start(()=>{
+                Animated.timing(email, { toValue: 15, delay: 100, duration: 500}).start()
             })
         }else{
-            Animated.timing(password,{toValue:0,duration:500}).start(()=>{
-                Animated.timing(password,{toValue:15,delay:100,duration:500}).start()
+            Animated.timing(password, { toValue: 0, duration: 500}).start(()=>{
+                Animated.timing(password, { toValue: 15, delay: 100, duration: 500}).start()
             })
         }
     }
-    // const showAnim = (id)=>{
-    //     if(id === 'email'){
-    //         Animated.timing(email,{toValue:15,duration:500}).start()
-    //     }else{
-    //         Animated.timing(password,{toValue:15,duration:500}).start()   
-    //     }
-    // }
 
     const wipeDetails = _ =>{
-        // alert(emailValue+"   "+passwordValue)
+        hideKeyboard()
         setLoading(true)
-        setTimeout(()=>{
+        firebase.auth().signInWithEmailAndPassword(emailValue, passwordValue).then(response=>{
+                console.log(response)
+                setLoading(false)
+                setSuccess(true)
+                setTimeout(()=>{
+                    setSuccess(false)
+                    Alert.alert("Congrats !!!","you have registered successfully",
+                    [{text:"ok"},{onPress:()=>true}])
+                },500)
+        }).catch((err) => {
             setLoading(false)
-            setSuccess(true)
-        },2000)
-        setTimeout(()=>{
-            Alert.alert("congratulations", "You've logged in successfully")
-            setSuccess(false)
-            close_login()
-        },4000)
-        // setEmail("")
-        // setPassword("")
+            Alert.alert("Bad Login", `Please provide login details ${err.message}`)
+        })
     }
 
     const hideDetails = ()=>{
@@ -81,7 +73,6 @@ export  function ModalLogin({action,close_login}) {
 
     const hideKeyboard =()=>{
         Keyboard.dismiss();
-        // close_login()
     }
 
   return ( 
@@ -137,7 +128,8 @@ const mapStateToProps = (store) =>({
 const mapDispatchToProps = (dispatch) =>{
     return {
         // open_login:()=>dispatch({type:'Open_login'}),
-        close_login: () => dispatch({ type:'Close_login'})
+        close_login: () => dispatch({ type:'Close_login'}),
+        set_username: (name) => dispatch({ type: 'auth', name })
     }
 }
 
@@ -221,7 +213,7 @@ const Button = styled.TouchableOpacity `
 `
 const ButtonText = styled.Text `
     width:200px;
-    text-align:center;
+    text-align:center; 
     margin:auto;
     text-transform:uppercase;
     font-size:25px;
