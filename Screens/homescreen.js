@@ -7,7 +7,8 @@ import {
   Animated, 
   Easing, 
   StatusBar,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 
@@ -24,15 +25,16 @@ const mapStateToProps = (store)=>({
   name:store?.name
 })
 
-const mapDispatchToProps = (dispatch) =>({updates:(args)=>dispatch({
-  type:args
-  })
+const mapDispatchToProps = (dispatch) =>({
+  updates:(args)=>dispatch({type:args}),
+  open_login:()=>dispatch({type:"Open_login"}),
+  set_username: (name) => dispatch({ type: 'auth', name })
 })
 
 
 const opacityVal = new Animated.Value(1)
 const scaling = new Animated.Value(1)
-const Home = ({action,updates,name,navigation}) => {
+const Home = ({action,updates,name,navigation,open_login,set_username}) => {
   const [scale, setscale] = useState(scaling)
   const [opacity, setopacity] = useState(opacityVal)
   const [Cards, setCards] = useState([{
@@ -43,6 +45,7 @@ const Home = ({action,updates,name,navigation}) => {
     caption: "4 of 12 Section"
   }])
   useEffect(() => {
+    get_storage();
     if(Platform.OS === 'android'){
       StatusBar.setHidden(false)
       StatusBar.setBarStyle('light-content',true)
@@ -51,10 +54,9 @@ const Home = ({action,updates,name,navigation}) => {
     fetch('https://next.json-generator.com/api/json/get/VkIGrEVBu')
     .then((res)=>res.json())
     .then((data)=>setCards(data))
-  }, [action])
+  }, [action,name])
   const toggle = ()=>{
       if(action === 'openmenu'){
-        console.log("reduce scale")
         Animated.timing(scale,{
           toValue:0.9,
           duration:300,
@@ -66,7 +68,6 @@ const Home = ({action,updates,name,navigation}) => {
         StatusBar.setBarStyle("dark-content",true)
       }
       if(action === 'closemenu'){
-        console.log("increase scale")
         Animated.timing(scale, {
           toValue: 1,
           duration: 300,
@@ -79,6 +80,22 @@ const Home = ({action,updates,name,navigation}) => {
 
       }
   }
+  
+  const get_storage = async _=>{
+
+    if(name === ""){
+     const local_name = await AsyncStorage.getItem('name');
+     set_username(local_name)
+    }
+  }
+
+  const auth_menu = () =>{
+    if(!name){
+      return open_login()
+    }
+    return updates("Open")
+  }
+
   return (
     <RootView>
       <Menu /> 
@@ -86,7 +103,7 @@ const Home = ({action,updates,name,navigation}) => {
         <SafeAreaView>
         <ScrollView style={{'height':'100%'}}>
           <TouchableOpacity 
-          onPress={() => updates('Open')}
+          onPress={() =>auth_menu()}
           width={50}
           height={50}
           style={{position:'absolute'}}
